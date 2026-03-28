@@ -1,0 +1,12 @@
+{
+	"name": "LS_REST_MBTA",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://services1.arcgis.com/ceiitspzDAHrdGO1/arcgis/rest/services/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
