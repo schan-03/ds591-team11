@@ -9,7 +9,10 @@
 		"type": "Json",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation"
+				"type": "AzureBlobFSLocation",
+				"fileName": "Fall2024_MBTA_Hourly_Hist",
+				"folderPath": "historical_mbta",
+				"fileSystem": "bronze"
 			}
 		},
 		"schema": {}
