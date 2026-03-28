@@ -1,0 +1,12 @@
+{
+	"name": "LS_HTTP_MBTA",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://services1.arcgis.com/ceiitspzDAHrdGO1/arcgis/rest/services/Fall_2024_MBTA_Rail_Ridership_by_Hour_Route_Line_and_Stop/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
