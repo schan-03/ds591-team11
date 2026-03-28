@@ -1,5 +1,5 @@
 {
-	"name": "Json1",
+	"name": "DS_ADLS_MBTA_Historical",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_ADLS_MBTA",
@@ -9,7 +9,10 @@
 		"type": "Json",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation"
+				"type": "AzureBlobFSLocation",
+				"fileName": "Fall2024_MBTA_Hist",
+				"folderPath": "historical_mbta",
+				"fileSystem": "bronze"
 			}
 		},
 		"schema": {}

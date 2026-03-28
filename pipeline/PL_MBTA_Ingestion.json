@@ -37,7 +37,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_REST_MBTA_History",
+						"referenceName": "DS_REST_MBTA_Historical",
 						"type": "DatasetReference",
 						"parameters": {
 							"item_info": {
@@ -49,7 +49,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Json1",
+						"referenceName": "DS_ADLS_MBTA_Historical",
 						"type": "DatasetReference"
 					}
 				]

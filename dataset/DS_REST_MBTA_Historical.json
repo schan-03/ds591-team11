@@ -1,5 +1,5 @@
 {
-	"name": "DS_REST_MBTA_History",
+	"name": "DS_REST_MBTA_Historical",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_REST_MBTA",
