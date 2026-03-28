@@ -5,11 +5,21 @@
 			"referenceName": "LS_HTTP_MBTA",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"item_info": {
+				"type": "String",
+				"defaultValue": "Fall_2024_MBTA_Rail_Ridership_by_Hour_Route_Line_and_Stop/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+			}
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
-				"type": "HttpServerLocation"
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@dataset().item_info",
+					"type": "Expression"
+				}
 			}
 		},
 		"schema": {}
