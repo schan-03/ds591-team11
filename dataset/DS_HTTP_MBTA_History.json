@@ -1,0 +1,17 @@
+{
+	"name": "DS_HTTP_MBTA_History",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_HTTP_MBTA",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		},
+		"schema": {}
+	}
+}
