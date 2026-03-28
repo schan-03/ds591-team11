@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'LS_ADLS_MBTA'"
 		},
+		"LS_Blob_MBTA_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_Blob_MBTA'"
+		},
 		"LS_ADLS_MBTA_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://591team11storage.dfs.core.windows.net/"
@@ -48,6 +52,9 @@
 					},
 					"LS_ADLS_MBTA_accountKey": {
 						"value": "[parameters('LS_ADLS_MBTA_accountKey')]"
+					},
+					"LS_Blob_MBTA_connectionString": {
+						"value": "[parameters('LS_Blob_MBTA_connectionString')]"
 					},
 					"LS_ADLS_MBTA_properties_typeProperties_url": {
 						"value": "[parameters('LS_ADLS_MBTA_properties_typeProperties_url')]"

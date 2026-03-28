@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'LS_ADLS_MBTA'"
 		},
+		"LS_Blob_MBTA_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_Blob_MBTA'"
+		},
 		"LS_ADLS_MBTA_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://591team11storage.dfs.core.windows.net/"
@@ -106,23 +110,23 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "LS_ADLS_MBTA",
+					"referenceName": "LS_Blob_MBTA",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
 				"type": "Json",
 				"typeProperties": {
 					"location": {
-						"type": "AzureBlobFSLocation",
+						"type": "AzureBlobStorageLocation",
 						"fileName": "Fall2024_MBTA_Hist",
 						"folderPath": "historical_mbta",
-						"fileSystem": "bronze"
+						"container": "bronze"
 					}
 				},
 				"schema": {}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_MBTA')]"
+				"[concat(variables('factoryId'), '/linkedServices/LS_Blob_MBTA')]"
 			]
 		},
 		{
@@ -166,6 +170,19 @@
 						"type": "SecureString",
 						"value": "[parameters('LS_ADLS_MBTA_accountKey')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_Blob_MBTA')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_Blob_MBTA_connectionString')]"
 				}
 			},
 			"dependsOn": []

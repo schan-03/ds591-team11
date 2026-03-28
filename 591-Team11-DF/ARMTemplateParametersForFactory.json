@@ -8,6 +8,9 @@
 		"LS_ADLS_MBTA_accountKey": {
 			"value": ""
 		},
+		"LS_Blob_MBTA_connectionString": {
+			"value": ""
+		},
 		"LS_ADLS_MBTA_properties_typeProperties_url": {
 			"value": "https://591team11storage.dfs.core.windows.net/"
 		},
