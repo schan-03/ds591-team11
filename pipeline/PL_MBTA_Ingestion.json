@@ -1,0 +1,66 @@
+{
+	"name": "PL_MBTA_Ingestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "CD_MBTA_Historical",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_REST_MBTA_Historical",
+						"type": "DatasetReference",
+						"parameters": {
+							"item_info": {
+								"value": "@pipeline().parameters.item_info",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ADLS_MBTA_Historical",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"item_info": {
+				"type": "string",
+				"defaultValue": "Fall_2024_MBTA_Rail_Ridership_by_Hour_Route_Line_and_Stop"
+			}
+		},
+		"annotations": []
+	}
+}
