@@ -1,5 +1,5 @@
 {
-	"name": "PL_MBTAIntestion",
+	"name": "PL_MBTA_Ingestion",
 	"properties": {
 		"activities": [
 			{
@@ -39,7 +39,10 @@
 				"inputs": [
 					{
 						"referenceName": "DS_HTTP_MBTA_History",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"item_info": "Fall_2024_MBTA_Rail_Ridership_by_Hour_Route_Line_and_Stop/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+						}
 					}
 				],
 				"outputs": [
@@ -50,6 +53,12 @@
 				]
 			}
 		],
+		"parameters": {
+			"item_info": {
+				"type": "string",
+				"defaultValue": "Fall_2024_MBTA_Rail_Ridership_by_Hour_Route_Line_and_Stop/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+			}
+		},
 		"annotations": []
 	}
 }
