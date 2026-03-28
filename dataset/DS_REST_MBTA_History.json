@@ -1,0 +1,23 @@
+{
+	"name": "DS_REST_MBTA_History",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_REST_MBTA",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"item_info": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().item_info",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}
