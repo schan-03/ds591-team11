@@ -1,0 +1,12 @@
+{
+	"name": "LS_ADLS_MBTA_Historical",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://591team11storage.dfs.core.windows.net/",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEQ5MDBDREJBLTMzOTQtNEYyMS1BMTM3LUY5RTcwMDZBNDc5NV82YzQ1YjZhMS05MjEwLTRjM2UtYWQ2ZS0zOGFmMmRlYzFjYjEiDQp9"
+		}
+	}
+}
