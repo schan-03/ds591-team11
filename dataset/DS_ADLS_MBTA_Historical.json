@@ -10,7 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "historical_mbta",
+				"fileName": "Fall2024_MBTA_Hist",
+				"folderPath": "mbta_historical",
 				"fileSystem": "bronze"
 			}
 		},
