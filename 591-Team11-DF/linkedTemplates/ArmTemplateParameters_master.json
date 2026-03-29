@@ -5,17 +5,17 @@
 		"factoryName": {
 			"value": "591-Team11-DF"
 		},
-		"LS_ADLS_MBTA_accountKey": {
-			"value": ""
-		},
 		"LS_Blob_MBTA_connectionString": {
 			"value": ""
 		},
-		"LS_ADLS_MBTA_properties_typeProperties_url": {
-			"value": "https://591team11storage.dfs.core.windows.net/"
+		"LS_ADLS_MBTA_Historical_accountKey": {
+			"value": ""
 		},
 		"LS_REST_MBTA_properties_typeProperties_url": {
 			"value": "https://services1.arcgis.com/ceiitspzDAHrdGO1/arcgis/rest/services/"
+		},
+		"LS_ADLS_MBTA_Historical_properties_typeProperties_url": {
+			"value": "https://591team11storage.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""

@@ -7,21 +7,21 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "591-Team11-DF"
 		},
-		"LS_ADLS_MBTA_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'LS_ADLS_MBTA'"
-		},
 		"LS_Blob_MBTA_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_Blob_MBTA'"
 		},
-		"LS_ADLS_MBTA_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://591team11storage.dfs.core.windows.net/"
+		"LS_ADLS_MBTA_Historical_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_ADLS_MBTA_Historical'"
 		},
 		"LS_REST_MBTA_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://services1.arcgis.com/ceiitspzDAHrdGO1/arcgis/rest/services/"
+		},
+		"LS_ADLS_MBTA_Historical_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://591team11storage.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -59,7 +59,7 @@
 							"sink": {
 								"type": "JsonSink",
 								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
+									"type": "AzureBlobFSWriteSettings"
 								},
 								"formatSettings": {
 									"type": "JsonWriteSettings"
@@ -105,31 +105,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_ADLS_MBTA_Historical')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Blob_MBTA",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "Fall2024_MBTA_Hist",
-						"folderPath": "historical_mbta",
-						"container": "bronze"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Blob_MBTA')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/DS_REST_MBTA_Historical')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -158,23 +133,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/LS_ADLS_MBTA')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('LS_ADLS_MBTA_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('LS_ADLS_MBTA_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/LS_Blob_MBTA')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -201,6 +159,48 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_ADLS_MBTA_Historical')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('LS_ADLS_MBTA_Historical_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('LS_ADLS_MBTA_Historical_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ADLS_MBTA_Historical')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_MBTA_Historical",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "fall2024_mbta_historical",
+						"folderPath": "historical_mbta",
+						"fileSystem": "bronze"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_MBTA_Historical')]"
+			]
 		}
 	]
 }
