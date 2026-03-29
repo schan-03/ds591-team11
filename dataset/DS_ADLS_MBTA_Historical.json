@@ -2,17 +2,16 @@
 	"name": "DS_ADLS_MBTA_Historical",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "LS_Blob_MBTA",
+			"referenceName": "LS_ADLS_MBTA",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation",
-				"fileName": "Fall2024_MBTA_Hist",
+				"type": "AzureBlobFSLocation",
 				"folderPath": "historical_mbta",
-				"container": "bronze"
+				"fileSystem": "bronze"
 			}
 		},
 		"schema": {}
