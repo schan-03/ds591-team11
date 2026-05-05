@@ -1,0 +1,116 @@
+{
+	"name": "Json_Historical_MBTA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_MBTA_Historical",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "fall2024_historical_mbta",
+				"folderPath": "historical_mbta",
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"crs": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string"
+						},
+						"properties": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"features": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string"
+							},
+							"properties": {
+								"type": "object",
+								"properties": {
+									"mode": {
+										"type": "string"
+									},
+									"season": {
+										"type": "string"
+									},
+									"route_id": {
+										"type": "string"
+									},
+									"route_name": {
+										"type": "string"
+									},
+									"dir_id": {
+										"type": "string"
+									},
+									"day_type_id": {
+										"type": "string"
+									},
+									"day_type_name": {
+										"type": "string"
+									},
+									"stop_name": {
+										"type": "string"
+									},
+									"parent_station": {
+										"type": "string"
+									},
+									"total_ons": {
+										"type": "integer"
+									},
+									"total_offs": {
+										"type": "integer"
+									},
+									"number_service_days": {
+										"type": "integer"
+									},
+									"hour_of_service": {
+										"type": "string"
+									},
+									"average_ons": {
+										"type": "integer"
+									},
+									"average_offs": {
+										"type": "integer"
+									},
+									"average_flow": {
+										"type": "integer"
+									},
+									"ObjectId": {
+										"type": "integer"
+									}
+								}
+							},
+							"geometry": {
+								"type": "null"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

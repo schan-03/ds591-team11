@@ -25,7 +25,11 @@
 						"referenceName": "Parquet_CLASSES_COMBINED",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_ADLS_MBTA_Historical",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
@@ -37,6 +41,9 @@
 				},
 				{
 					"name": "join1"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -49,12 +56,12 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> spring2026",
 				"source(output(",
-				"          {Course ID} as string,",
+				"          Course_ID as string,",
 				"          Term as string,",
 				"          Session as string,",
-				"          {Consolidated Class Field} as string,",
-				"          {Subject Area} as string,",
-				"          {Catalog Nbr} as string,",
+				"          Consolidated_Class_Field as string,",
+				"          Subject_Area as string,",
+				"          Catalog_Nbr as string,",
 				"          {Class Section} as string,",
 				"          {Class Nbr} as string,",
 				"          Career as string,",
@@ -81,13 +88,9 @@
 				"     ignoreNoFilesFound: false) ~> notspring2026",
 				"spring2026 foldDown(unroll(classes.meetings, classes),",
 				"     mapColumn(",
-				"          index = classes.index,",
 				"          institution = classes.institution,",
 				"          institution_descr = classes.institution_descr,",
-				"          crse_id = classes.crse_id,",
-				"          crse_offer_nbr = classes.crse_offer_nbr,",
-				"          strm = classes.strm,",
-				"          session_code = classes.session_code,",
+				"          course_id = classes.crse_id,",
 				"          session_descr = classes.session_descr,",
 				"          class_section = classes.class_section,",
 				"          location = classes.location,",
@@ -135,19 +138,11 @@
 				"          room = classes.meetings.room,",
 				"          facility_id = classes.meetings.facility_id,",
 				"          instructor = classes.meetings.instructor,",
-				"          crse_attr = classes.crse_attr,",
-				"          crse_attr_value = classes.crse_attr_value,",
-				"          reserve_caps = classes.reserve_caps,",
-				"          reserved_combined_info = classes.reserved_combined_info,",
-				"          isInCart = classes.isInCart,",
-				"          isEnrolled = classes.isEnrolled,",
-				"          isWaitlisted = classes.isWaitlisted,",
-				"          notes = classes.notes,",
-				"          icons = classes.icons",
+				"          crse_attr = classes.crse_attr",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"flatten1 derive(consolidated_class_field = concat(subject, catalog_nbr)) ~> derivedColumn1",
+				"flatten1 derive({consolidated class field} = concat(subject, catalog_nbr)) ~> derivedColumn1",
 				"derivedColumn1, notspring2026 join(start_dt == {Meeting Start Date}",
 				"     && end_dt == {Meeting End Date}",
 				"     && start_time == {Start Time}",
@@ -159,14 +154,26 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"join1 sink(allowSchemaDrift: true,",
+				"join1 select(mapColumn(",
+				"          each(match(true()  ),",
+				"               lower(",
+				"  replace(",
+				"    replace(",
+				"      replace(",
+				"        replace($$, ' ', '_'),",
+				"      '{', ''),",
+				"    '}', ''),",
+				"  '@', '_')",
+				") = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
 				"     umask: 0022,",
 				"     preCommands: [],",
-				"     postCommands: [],",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     postCommands: []) ~> sink1"
 			]
 		}
 	}
