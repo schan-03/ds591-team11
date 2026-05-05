@@ -5,14 +5,77 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "CSV_finals_schedule",
+						"type": "DatasetReference"
+					},
 					"name": "source1"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Parquet_SINK_SILVER",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1"
+				"source(output(",
+				"          {Academic Career} as string,",
+				"          {Academic Group} as string,",
+				"          {Course ID} as string,",
+				"          {Subject Area} as string,",
+				"          {Catalog Nbr} as string,",
+				"          {Class Section} as string,",
+				"          Description as string,",
+				"          Session as string,",
+				"          {Enrollment Total} as string,",
+				"          {Exam Time Code} as string,",
+				"          {Exam Date} as string,",
+				"          {Exam Start Time} as string,",
+				"          {Exam End Time} as string,",
+				"          {Facility ID(s)} as string,",
+				"          {Room Capacity} as string,",
+				"          {Combined Exam} as string,",
+				"          {Instructor(s)} as string,",
+				"          {Instructor's Email(s)} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 select(mapColumn(",
+				"          each(match(true()),",
+				"               lower(",
+				"  replace(",
+				"    replace(",
+				"      replace(",
+				"        replace(",
+				"          replace(",
+				"            replace($$, ' ', '_'),",
+				"          '{', ''),",
+				"        '}', ''),",
+				"      '@', '_'),",
+				"    '-', '_'),",
+				"  '.', '_')",
+				") = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
