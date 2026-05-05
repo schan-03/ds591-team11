@@ -1,0 +1,282 @@
+{
+	"name": "Json_SPRING26_SINK",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_MBTA_Historical",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "class_schedules",
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"pageCount": {
+					"type": "integer"
+				},
+				"classes": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"index": {
+								"type": "integer"
+							},
+							"institution": {
+								"type": "string"
+							},
+							"institution_descr": {
+								"type": "string"
+							},
+							"crse_id": {
+								"type": "string"
+							},
+							"crse_offer_nbr": {
+								"type": "integer"
+							},
+							"strm": {
+								"type": "string"
+							},
+							"session_code": {
+								"type": "string"
+							},
+							"session_descr": {
+								"type": "string"
+							},
+							"class_section": {
+								"type": "string"
+							},
+							"location": {
+								"type": "string"
+							},
+							"location_descr": {
+								"type": "string"
+							},
+							"start_dt": {
+								"type": "string"
+							},
+							"end_dt": {
+								"type": "string"
+							},
+							"class_stat": {
+								"type": "string"
+							},
+							"campus": {
+								"type": "string"
+							},
+							"campus_descr": {
+								"type": "string"
+							},
+							"class_nbr": {
+								"type": "integer"
+							},
+							"acad_career": {
+								"type": "string"
+							},
+							"acad_career_descr": {
+								"type": "string"
+							},
+							"component": {
+								"type": "string"
+							},
+							"subject": {
+								"type": "string"
+							},
+							"subject_descr": {
+								"type": "string"
+							},
+							"catalog_nbr": {
+								"type": "string"
+							},
+							"class_type": {
+								"type": "string"
+							},
+							"schedule_print": {
+								"type": "string"
+							},
+							"acad_group": {
+								"type": "string"
+							},
+							"instruction_mode": {
+								"type": "string"
+							},
+							"instruction_mode_descr": {
+								"type": "string"
+							},
+							"acad_org": {
+								"type": "string"
+							},
+							"grading_basis": {
+								"type": "string"
+							},
+							"wait_tot": {
+								"type": "integer"
+							},
+							"wait_cap": {
+								"type": "integer"
+							},
+							"class_capacity": {
+								"type": "integer"
+							},
+							"enrollment_total": {
+								"type": "integer"
+							},
+							"enrollment_available": {
+								"type": "integer"
+							},
+							"descr": {
+								"type": "string"
+							},
+							"rqmnt_designtn": {
+								"type": "string"
+							},
+							"units": {
+								"type": "string"
+							},
+							"combined_section": {
+								"type": "string"
+							},
+							"combined_descr": {
+								"type": "string"
+							},
+							"enrl_stat": {
+								"type": "string"
+							},
+							"enrl_stat_descr": {
+								"type": "string"
+							},
+							"topic": {
+								"type": "string"
+							},
+							"instructors": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"email": {
+											"type": "string"
+										}
+									}
+								}
+							},
+							"section_type": {
+								"type": "string"
+							},
+							"meetings": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"days": {
+											"type": "string"
+										},
+										"start_time": {
+											"type": "string"
+										},
+										"end_time": {
+											"type": "string"
+										},
+										"start_dt": {
+											"type": "string"
+										},
+										"end_dt": {
+											"type": "string"
+										},
+										"bldg_cd": {
+											"type": "string"
+										},
+										"bldg_has_coordinates": {
+											"type": "boolean"
+										},
+										"facility_descr": {
+											"type": "string"
+										},
+										"room": {
+											"type": "string"
+										},
+										"facility_id": {
+											"type": "string"
+										},
+										"instructor": {
+											"type": "string"
+										}
+									}
+								}
+							},
+							"crse_attr": {
+								"type": "string"
+							},
+							"crse_attr_value": {
+								"type": "string"
+							},
+							"reserve_caps": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"rsrv_cap_nbr": {
+											"type": "integer"
+										},
+										"start_dt": {
+											"type": "string"
+										},
+										"enrl_cap": {
+											"type": "integer"
+										},
+										"descr": {
+											"type": "string"
+										},
+										"enrl_tot": {
+											"type": "integer"
+										}
+									}
+								}
+							},
+							"reserved_combined_info": {
+								"type": "object",
+								"properties": {
+									"class_enrl_cap": {
+										"type": "integer"
+									},
+									"combined_enrl_cap": {
+										"type": "integer"
+									},
+									"enrl_tot_other_combined": {
+										"type": "integer"
+									}
+								}
+							},
+							"isInCart": {
+								"type": "boolean"
+							},
+							"isEnrolled": {
+								"type": "boolean"
+							},
+							"isWaitlisted": {
+								"type": "boolean"
+							},
+							"notes": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"icons": {
+								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

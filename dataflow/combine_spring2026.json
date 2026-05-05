@@ -1,0 +1,103 @@
+{
+	"name": "combine_spring2026",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SPRING26_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "spring2026"
+				},
+				{
+					"dataset": {
+						"referenceName": "Excel_SPRING2026",
+						"type": "DatasetReference"
+					},
+					"name": "notspring2026"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          pageCount as integer,",
+				"          classes as (index as integer, institution as string, institution_descr as string, crse_id as string, crse_offer_nbr as integer, strm as string, session_code as string, session_descr as string, class_section as string, location as string, location_descr as string, start_dt as string, end_dt as string, class_stat as string, campus as string, campus_descr as string, class_nbr as integer, acad_career as string, acad_career_descr as string, component as string, subject as string, subject_descr as string, catalog_nbr as string, class_type as string, schedule_print as string, acad_group as string, instruction_mode as string, instruction_mode_descr as string, acad_org as string, grading_basis as string, wait_tot as integer, wait_cap as integer, class_capacity as integer, enrollment_total as integer, enrollment_available as integer, descr as string, rqmnt_designtn as string, units as string, combined_section as string, combined_descr as string, enrl_stat as string, enrl_stat_descr as string, topic as string, instructors as (name as string, email as string)[], section_type as string, meetings as (days as string, start_time as string, end_time as string, start_dt as string, end_dt as string, bldg_cd as string, bldg_has_coordinates as boolean, facility_descr as string, room as string, facility_id as string, instructor as string)[], crse_attr as string, crse_attr_value as string, reserve_caps as (rsrv_cap_nbr as integer, start_dt as string, enrl_cap as integer, descr as string, enrl_tot as integer)[], reserved_combined_info as (class_enrl_cap as integer, combined_enrl_cap as integer, enrl_tot_other_combined as integer), isInCart as boolean, isEnrolled as boolean, isWaitlisted as boolean, notes as string[], icons as string[])[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> spring2026",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> notspring2026",
+				"spring2026 foldDown(unroll(classes, classes),",
+				"     mapColumn(",
+				"          index = classes.index,",
+				"          institution = classes.institution,",
+				"          institution_descr = classes.institution_descr,",
+				"          crse_id = classes.crse_id,",
+				"          crse_offer_nbr = classes.crse_offer_nbr,",
+				"          strm = classes.strm,",
+				"          session_code = classes.session_code,",
+				"          session_descr = classes.session_descr,",
+				"          class_section = classes.class_section,",
+				"          location = classes.location,",
+				"          location_descr = classes.location_descr,",
+				"          start_dt = classes.start_dt,",
+				"          end_dt = classes.end_dt,",
+				"          class_stat = classes.class_stat,",
+				"          campus = classes.campus,",
+				"          campus_descr = classes.campus_descr,",
+				"          class_nbr = classes.class_nbr,",
+				"          acad_career = classes.acad_career,",
+				"          acad_career_descr = classes.acad_career_descr,",
+				"          component = classes.component,",
+				"          subject = classes.subject,",
+				"          subject_descr = classes.subject_descr,",
+				"          catalog_nbr = classes.catalog_nbr,",
+				"          class_type = classes.class_type,",
+				"          schedule_print = classes.schedule_print,",
+				"          acad_group = classes.acad_group,",
+				"          instruction_mode = classes.instruction_mode,",
+				"          instruction_mode_descr = classes.instruction_mode_descr,",
+				"          acad_org = classes.acad_org,",
+				"          grading_basis = classes.grading_basis,",
+				"          wait_tot = classes.wait_tot,",
+				"          wait_cap = classes.wait_cap,",
+				"          class_capacity = classes.class_capacity,",
+				"          enrollment_total = classes.enrollment_total,",
+				"          enrollment_available = classes.enrollment_available,",
+				"          descr = classes.descr,",
+				"          rqmnt_designtn = classes.rqmnt_designtn,",
+				"          units = classes.units,",
+				"          combined_section = classes.combined_section,",
+				"          combined_descr = classes.combined_descr,",
+				"          enrl_stat = classes.enrl_stat,",
+				"          enrl_stat_descr = classes.enrl_stat_descr,",
+				"          topic = classes.topic,",
+				"          instructors = classes.instructors,",
+				"          section_type = classes.section_type,",
+				"          meetings = classes.meetings,",
+				"          crse_attr = classes.crse_attr,",
+				"          crse_attr_value = classes.crse_attr_value,",
+				"          reserve_caps = classes.reserve_caps,",
+				"          reserved_combined_info = classes.reserved_combined_info,",
+				"          isInCart = classes.isInCart,",
+				"          isEnrolled = classes.isEnrolled,",
+				"          isWaitlisted = classes.isWaitlisted,",
+				"          notes = classes.notes,",
+				"          icons = classes.icons",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1"
+			]
+		}
+	}
+}

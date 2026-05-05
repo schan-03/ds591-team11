@@ -1,0 +1,22 @@
+{
+	"name": "Excel_SPRING2026",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_MBTA_Historical",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "sheet1",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "class_schedules/EXCEL_SCHEDULES",
+				"fileSystem": "bronze"
+			},
+			"range": "A2:XFD1048576",
+			"firstRowAsHeader": false
+		},
+		"schema": []
+	}
+}
