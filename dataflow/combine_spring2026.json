@@ -19,10 +19,24 @@
 					"name": "notspring2026"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Parquet_CLASSES_COMBINED",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "flatten1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join1"
 				}
 			],
 			"scriptLines": [
@@ -34,10 +48,38 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> spring2026",
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          {Course ID} as string,",
+				"          Term as string,",
+				"          Session as string,",
+				"          {Consolidated Class Field} as string,",
+				"          {Subject Area} as string,",
+				"          {Catalog Nbr} as string,",
+				"          {Class Section} as string,",
+				"          {Class Nbr} as string,",
+				"          Career as string,",
+				"          Description as string,",
+				"          {Credit Hours} as string,",
+				"          Campus as string,",
+				"          {Days Of The Week} as string,",
+				"          {Start Time} as string,",
+				"          {End Time} as string,",
+				"          {Facil ID} as string,",
+				"          {Meeting Start Date} as string,",
+				"          {Meeting End Date} as string,",
+				"          {Cap Enrl} as string,",
+				"          {Wait Cap} as string,",
+				"          {Min Enrl} as string,",
+				"          {Tot Enrl} as string,",
+				"          {Wait Tot} as string,",
+				"          {Acad Group} as string,",
+				"          {Enrl Stat} as string,",
+				"          {Class Stat} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> notspring2026",
-				"spring2026 foldDown(unroll(classes, classes),",
+				"spring2026 foldDown(unroll(classes.meetings, classes),",
 				"     mapColumn(",
 				"          index = classes.index,",
 				"          institution = classes.institution,",
@@ -84,7 +126,15 @@
 				"          topic = classes.topic,",
 				"          instructors = classes.instructors,",
 				"          section_type = classes.section_type,",
-				"          meetings = classes.meetings,",
+				"          days = classes.meetings.days,",
+				"          start_time = classes.meetings.start_time,",
+				"          end_time = classes.meetings.end_time,",
+				"          bldg_cd = classes.meetings.bldg_cd,",
+				"          bldg_has_coordinates = classes.meetings.bldg_has_coordinates,",
+				"          facility_descr = classes.meetings.facility_descr,",
+				"          room = classes.meetings.room,",
+				"          facility_id = classes.meetings.facility_id,",
+				"          instructor = classes.meetings.instructor,",
 				"          crse_attr = classes.crse_attr,",
 				"          crse_attr_value = classes.crse_attr_value,",
 				"          reserve_caps = classes.reserve_caps,",
@@ -96,7 +146,27 @@
 				"          icons = classes.icons",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1"
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 derive(consolidated_class_field = concat(subject, catalog_nbr)) ~> derivedColumn1",
+				"derivedColumn1, notspring2026 join(start_dt == {Meeting Start Date}",
+				"     && end_dt == {Meeting End Date}",
+				"     && start_time == {Start Time}",
+				"     && end_time == {End Time}",
+				"     && facility_id == {Facil ID}",
+				"     && days == {Days Of The Week}",
+				"     && enrollment_total == toInteger({Tot Enrl}),",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
