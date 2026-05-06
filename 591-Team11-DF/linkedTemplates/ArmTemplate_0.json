@@ -1433,7 +1433,7 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> historicalmbtaf24",
+						"     documentForm: 'singleDocument') ~> historicalmbtaf24",
 						"source(output(",
 						"          {Academic Career} as string,",
 						"          {Academic Group} as string,",
