@@ -7,21 +7,25 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "591-Team11-DF"
 		},
+		"LS_ADLS_MBTA_Historical_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_ADLS_MBTA_Historical'"
+		},
 		"LS_Blob_MBTA_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_Blob_MBTA'"
 		},
-		"LS_ADLS_MBTA_Historical_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'LS_ADLS_MBTA_Historical'"
+		"LS_ADLS_MBTA_Historical_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://591team11storage.dfs.core.windows.net/"
 		},
 		"LS_REST_MBTA_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://services1.arcgis.com/ceiitspzDAHrdGO1/arcgis/rest/services/"
 		},
-		"LS_ADLS_MBTA_Historical_properties_typeProperties_url": {
+		"TRIGGER_MBTA_Ingest_1year_properties_PL_MBTA_Ingestion_parameters_item_info": {
 			"type": "string",
-			"defaultValue": "https://591team11storage.dfs.core.windows.net/"
+			"defaultValue": "Fall_2024_MBTA_Rail_Ridership_by_Hour_Route_Line_and_Stop/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
 		},
 		"containerUri": {
 			"type": "string",
@@ -50,17 +54,20 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"LS_ADLS_MBTA_Historical_accountKey": {
+						"value": "[parameters('LS_ADLS_MBTA_Historical_accountKey')]"
+					},
 					"LS_Blob_MBTA_connectionString": {
 						"value": "[parameters('LS_Blob_MBTA_connectionString')]"
 					},
-					"LS_ADLS_MBTA_Historical_accountKey": {
-						"value": "[parameters('LS_ADLS_MBTA_Historical_accountKey')]"
+					"LS_ADLS_MBTA_Historical_properties_typeProperties_url": {
+						"value": "[parameters('LS_ADLS_MBTA_Historical_properties_typeProperties_url')]"
 					},
 					"LS_REST_MBTA_properties_typeProperties_url": {
 						"value": "[parameters('LS_REST_MBTA_properties_typeProperties_url')]"
 					},
-					"LS_ADLS_MBTA_Historical_properties_typeProperties_url": {
-						"value": "[parameters('LS_ADLS_MBTA_Historical_properties_typeProperties_url')]"
+					"TRIGGER_MBTA_Ingest_1year_properties_PL_MBTA_Ingestion_parameters_item_info": {
+						"value": "[parameters('TRIGGER_MBTA_Ingest_1year_properties_PL_MBTA_Ingestion_parameters_item_info')]"
 					}
 				}
 			},
