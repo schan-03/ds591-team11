@@ -1,5 +1,5 @@
 {
-	"name": "combine_class_ridership_F24",
+	"name": "combine_class_ridership_F24_parquet",
 	"properties": {
 		"description": "Combine Fall 2024 Ridership data with Fall 2024 class schedule ",
 		"type": "MappingDataFlow",
@@ -10,16 +10,58 @@
 						"referenceName": "Json_Historical_MBTA",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "historicalmbtaf24"
+				},
+				{
+					"dataset": {
+						"referenceName": "CSV_finals_f24",
+						"type": "DatasetReference"
+					},
+					"name": "finalsf24"
+				},
+				{
+					"dataset": {
+						"referenceName": "CSV_bu_building_code",
+						"type": "DatasetReference"
+					},
+					"name": "bubuildingcodes"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Parquet_historical_mbta",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "Parquet_finals24",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "Parquet_BU_BUILDING_CODE",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
 			"transformations": [
 				{
 					"name": "flatten1"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -32,8 +74,40 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> source1",
-				"source1 foldDown(unroll(features),",
+				"     documentForm: 'documentPerLine') ~> historicalmbtaf24",
+				"source(output(",
+				"          {Academic Career} as string,",
+				"          {Academic Group} as string,",
+				"          {Course ID} as string,",
+				"          {Subject Area} as string,",
+				"          {Catalog Nbr} as string,",
+				"          {Class Section} as string,",
+				"          Description as string,",
+				"          Session as string,",
+				"          {Enrollment Total} as string,",
+				"          {Exam Time Code} as string,",
+				"          {Exam Date} as string,",
+				"          {Exam Start Time} as string,",
+				"          {Exam End Time} as string,",
+				"          {Facility ID(s)} as string,",
+				"          {Room Capacity} as string,",
+				"          {Combined Exam} as string,",
+				"          {Instructor(s)} as string,",
+				"          {Instructor's Email(s)} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> finalsf24",
+				"source(output(",
+				"          Code as string,",
+				"          {Full Name} as string,",
+				"          {Street Address} as string,",
+				"          {Best Stop} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> bubuildingcodes",
+				"historicalmbtaf24 foldDown(unroll(features),",
 				"     mapColumn(",
 				"          mode = features.properties.mode,",
 				"          season = features.properties.season,",
@@ -53,7 +127,69 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"flatten1 derive() ~> derivedColumn1"
+				"select1 derive(day_of_week = case(",
+				"  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 1, 'Sunday',",
+				"  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 2, 'Weekday',",
+				"  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 3, 'Weekday',",
+				"  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 4, 'Weekday',",
+				"  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 5, 'Weekday',",
+				"  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 6, 'Weekday',",
+				"  'Saturday'",
+				"),",
+				"          exam_start_bucket = concat(",
+				"  lpad(toString(hour(toTimestamp(exam_start_time, 'h:mm a'))), 2, '0'),",
+				"  ':00:00'",
+				"),",
+				"          exam_end_bucket = concat(",
+				"  lpad(",
+				"    toString(",
+				"      iif(",
+				"        minute(toTimestamp(exam_end_time, 'h:mm a')) > 0,",
+				"        hour(toTimestamp(exam_end_time, 'h:mm a')) + 1,",
+				"        hour(toTimestamp(exam_end_time, 'h:mm a'))",
+				"      )",
+				"    ),",
+				"    2,",
+				"    '0'",
+				"  ),",
+				"  ':00:00'",
+				")) ~> derivedColumn2",
+				"finalsf24 select(mapColumn(",
+				"          each(match(true()      ),",
+				"               lower(replace(replace(replace(replace(replace(replace($$,' ','_'),'{',''),'}',''),'@','_'),'-','_'),'.','_')) = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"bubuildingcodes select(mapColumn(",
+				"          each(match(true()),",
+				"               lower(replace(replace(replace(replace(replace(replace($$,' ','_'),'{',''),'}',''),'@','_'),'-','_'),'.','_')) = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"flatten1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink3"
 			]
 		}
 	}

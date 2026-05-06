@@ -1,0 +1,40 @@
+{
+	"name": "CSV_bu_building_code",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_MBTA_Historical",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "BU_BUILDING_CODES_with_stops.csv",
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Code",
+				"type": "String"
+			},
+			{
+				"name": "Full Name",
+				"type": "String"
+			},
+			{
+				"name": "Street Address",
+				"type": "String"
+			},
+			{
+				"name": "Best Stop",
+				"type": "String"
+			}
+		]
+	}
+}
