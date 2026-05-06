@@ -1,0 +1,60 @@
+{
+	"name": "combine_class_ridership_F24",
+	"properties": {
+		"description": "Combine Fall 2024 Ridership data with Fall 2024 class schedule ",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Json_Historical_MBTA",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          type as string,",
+				"          name as string,",
+				"          crs as (type as string, properties as (name as string)),",
+				"          features as (type as string, properties as (mode as string, season as string, route_id as string, route_name as string, dir_id as string, day_type_id as string, day_type_name as string, stop_name as string, parent_station as string, total_ons as integer, total_offs as integer, number_service_days as integer, hour_of_service as string, average_ons as integer, average_offs as integer, average_flow as integer, ObjectId as integer), geometry as string)[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source1 foldDown(unroll(features),",
+				"     mapColumn(",
+				"          mode = features.properties.mode,",
+				"          season = features.properties.season,",
+				"          route_id = features.properties.route_id,",
+				"          dir_id = features.properties.dir_id,",
+				"          day_type_id = features.properties.day_type_id,",
+				"          day_type_name = features.properties.day_type_name,",
+				"          stop_name = features.properties.stop_name,",
+				"          parent_station = features.properties.parent_station,",
+				"          total_ons = features.properties.total_ons,",
+				"          total_offs = features.properties.total_offs,",
+				"          number_service_days = features.properties.number_service_days,",
+				"          hour_of_service = features.properties.hour_of_service,",
+				"          average_ons = features.properties.average_ons,",
+				"          average_offs = features.properties.average_offs,",
+				"          average_flow = features.properties.average_flow",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 derive() ~> derivedColumn1"
+			]
+		}
+	}
+}
