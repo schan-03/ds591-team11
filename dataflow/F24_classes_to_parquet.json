@@ -1,0 +1,62 @@
+{
+	"name": "F24_classes_to_parquet",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Excel_Fall24_ClassSched",
+						"type": "DatasetReference"
+					},
+					"name": "f24classes"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Course ID} as string,",
+				"          Term as string,",
+				"          Session as string,",
+				"          {Consolidated Class Field} as string,",
+				"          {Subject Area} as string,",
+				"          {Catalog Nbr} as string,",
+				"          {Class Section} as string,",
+				"          {Class Nbr} as string,",
+				"          Career as string,",
+				"          Description as string,",
+				"          {Credit Hours} as string,",
+				"          Campus as string,",
+				"          {Days Of The Week} as string,",
+				"          {Start Time} as string,",
+				"          {End Time} as string,",
+				"          {Facil ID} as string,",
+				"          {Meeting Start Date} as string,",
+				"          {Meeting End Date} as string,",
+				"          {Cap Enrl} as string,",
+				"          {Wait Cap} as string,",
+				"          {Min Enrl} as string,",
+				"          {Tot Enrl} as string,",
+				"          {Wait Tot} as string,",
+				"          {Acad Group} as string,",
+				"          {Enrl Stat} as string,",
+				"          {Class Stat} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> f24classes",
+				"f24classes select(mapColumn(",
+				"          each(match(true()),",
+				"               lower(replace(replace(replace(replace(replace(replace($$,' ','_'),'{',''),'}',''),'@','_'),'-','_'),'.','_')) = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1"
+			]
+		}
+	}
+}

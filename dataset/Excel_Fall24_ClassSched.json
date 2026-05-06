@@ -1,0 +1,128 @@
+{
+	"name": "Excel_Fall24_ClassSched",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_MBTA_Historical",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "sheet1",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "FALL 2024_CLASS_SCHD_DOWNLD.xls",
+				"folderPath": "class_schedules/EXCEL_SCHEDULES",
+				"fileSystem": "bronze"
+			},
+			"range": "A2:Z1000",
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Course ID",
+				"type": "String"
+			},
+			{
+				"name": "Term",
+				"type": "String"
+			},
+			{
+				"name": "Session",
+				"type": "String"
+			},
+			{
+				"name": "Consolidated Class Field",
+				"type": "String"
+			},
+			{
+				"name": "Subject Area",
+				"type": "String"
+			},
+			{
+				"name": "Catalog Nbr",
+				"type": "String"
+			},
+			{
+				"name": "Class Section",
+				"type": "String"
+			},
+			{
+				"name": "Class Nbr",
+				"type": "String"
+			},
+			{
+				"name": "Career",
+				"type": "String"
+			},
+			{
+				"name": "Description",
+				"type": "String"
+			},
+			{
+				"name": "Credit Hours",
+				"type": "String"
+			},
+			{
+				"name": "Campus",
+				"type": "String"
+			},
+			{
+				"name": "Days Of The Week",
+				"type": "String"
+			},
+			{
+				"name": "Start Time",
+				"type": "String"
+			},
+			{
+				"name": "End Time",
+				"type": "String"
+			},
+			{
+				"name": "Facil ID",
+				"type": "String"
+			},
+			{
+				"name": "Meeting Start Date",
+				"type": "String"
+			},
+			{
+				"name": "Meeting End Date",
+				"type": "String"
+			},
+			{
+				"name": "Cap Enrl",
+				"type": "String"
+			},
+			{
+				"name": "Wait Cap",
+				"type": "String"
+			},
+			{
+				"name": "Min Enrl",
+				"type": "String"
+			},
+			{
+				"name": "Tot Enrl",
+				"type": "String"
+			},
+			{
+				"name": "Wait Tot",
+				"type": "String"
+			},
+			{
+				"name": "Acad Group",
+				"type": "String"
+			},
+			{
+				"name": "Enrl Stat",
+				"type": "String"
+			},
+			{
+				"name": "Class Stat",
+				"type": "String"
+			}
+		]
+	}
+}
