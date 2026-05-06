@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "combine_spring2026",
+				"name": "combine_class_ridership_F24_parquet",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "combine_spring2026",
+						"referenceName": "combine_class_ridership_F24_parquet",
 						"type": "DataFlowReference"
 					},
 					"compute": {
