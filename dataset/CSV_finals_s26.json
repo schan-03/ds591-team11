@@ -1,0 +1,97 @@
+{
+	"name": "CSV_finals_s26",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_MBTA_Historical",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "SPRING2026_FINAL_EXAM_SCHDL_ALL.csv",
+				"folderPath": "finals_schedule",
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Academic Career",
+				"type": "String"
+			},
+			{
+				"name": "Academic Group",
+				"type": "String"
+			},
+			{
+				"name": "Course ID",
+				"type": "String"
+			},
+			{
+				"name": "Subject Area",
+				"type": "String"
+			},
+			{
+				"name": "Catalog Nbr",
+				"type": "String"
+			},
+			{
+				"name": "Class Section",
+				"type": "String"
+			},
+			{
+				"name": "Description",
+				"type": "String"
+			},
+			{
+				"name": "Session",
+				"type": "String"
+			},
+			{
+				"name": "Enrollment Total",
+				"type": "String"
+			},
+			{
+				"name": "Exam Time Code",
+				"type": "String"
+			},
+			{
+				"name": "Exam Date",
+				"type": "String"
+			},
+			{
+				"name": "Exam Start Time",
+				"type": "String"
+			},
+			{
+				"name": "Exam End Time",
+				"type": "String"
+			},
+			{
+				"name": "Facility ID(s)",
+				"type": "String"
+			},
+			{
+				"name": "Room Capacity",
+				"type": "String"
+			},
+			{
+				"name": "Combined Exam",
+				"type": "String"
+			},
+			{
+				"name": "Instructor(s)",
+				"type": "String"
+			},
+			{
+				"name": "Instructor's Email(s)",
+				"type": "String"
+			}
+		]
+	}
+}
