@@ -156,6 +156,52 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/transform_data_2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "spring26_parquet",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"finalss26": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/spring26_parquet')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CSV_bu_building_code')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -215,6 +261,108 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "FALL2024_FINAL_EXAM_SCHDL.csv",
+						"folderPath": "finals_schedule",
+						"fileSystem": "bronze"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Academic Career",
+						"type": "String"
+					},
+					{
+						"name": "Academic Group",
+						"type": "String"
+					},
+					{
+						"name": "Course ID",
+						"type": "String"
+					},
+					{
+						"name": "Subject Area",
+						"type": "String"
+					},
+					{
+						"name": "Catalog Nbr",
+						"type": "String"
+					},
+					{
+						"name": "Class Section",
+						"type": "String"
+					},
+					{
+						"name": "Description",
+						"type": "String"
+					},
+					{
+						"name": "Session",
+						"type": "String"
+					},
+					{
+						"name": "Enrollment Total",
+						"type": "String"
+					},
+					{
+						"name": "Exam Time Code",
+						"type": "String"
+					},
+					{
+						"name": "Exam Date",
+						"type": "String"
+					},
+					{
+						"name": "Exam Start Time",
+						"type": "String"
+					},
+					{
+						"name": "Exam End Time",
+						"type": "String"
+					},
+					{
+						"name": "Facility ID(s)",
+						"type": "String"
+					},
+					{
+						"name": "Room Capacity",
+						"type": "String"
+					},
+					{
+						"name": "Combined Exam",
+						"type": "String"
+					},
+					{
+						"name": "Instructor(s)",
+						"type": "String"
+					},
+					{
+						"name": "Instructor's Email(s)",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_MBTA_Historical')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSV_finals_s26')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_MBTA_Historical",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "SPRING2026_FINAL_EXAM_SCHDL_ALL.csv",
 						"folderPath": "finals_schedule",
 						"fileSystem": "bronze"
 					},
@@ -395,6 +543,139 @@
 					},
 					{
 						"name": "Instructor's Email(s)",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_MBTA_Historical')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Excel_Fall24_ClassSched')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_MBTA_Historical",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "sheet1",
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "FALL 2024_CLASS_SCHD_DOWNLD.xls",
+						"folderPath": "class_schedules/EXCEL_SCHEDULES",
+						"fileSystem": "bronze"
+					},
+					"range": "A2:Z1000",
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Course ID",
+						"type": "String"
+					},
+					{
+						"name": "Term",
+						"type": "String"
+					},
+					{
+						"name": "Session",
+						"type": "String"
+					},
+					{
+						"name": "Consolidated Class Field",
+						"type": "String"
+					},
+					{
+						"name": "Subject Area",
+						"type": "String"
+					},
+					{
+						"name": "Catalog Nbr",
+						"type": "String"
+					},
+					{
+						"name": "Class Section",
+						"type": "String"
+					},
+					{
+						"name": "Class Nbr",
+						"type": "String"
+					},
+					{
+						"name": "Career",
+						"type": "String"
+					},
+					{
+						"name": "Description",
+						"type": "String"
+					},
+					{
+						"name": "Credit Hours",
+						"type": "String"
+					},
+					{
+						"name": "Campus",
+						"type": "String"
+					},
+					{
+						"name": "Days Of The Week",
+						"type": "String"
+					},
+					{
+						"name": "Start Time",
+						"type": "String"
+					},
+					{
+						"name": "End Time",
+						"type": "String"
+					},
+					{
+						"name": "Facil ID",
+						"type": "String"
+					},
+					{
+						"name": "Meeting Start Date",
+						"type": "String"
+					},
+					{
+						"name": "Meeting End Date",
+						"type": "String"
+					},
+					{
+						"name": "Cap Enrl",
+						"type": "String"
+					},
+					{
+						"name": "Wait Cap",
+						"type": "String"
+					},
+					{
+						"name": "Min Enrl",
+						"type": "String"
+					},
+					{
+						"name": "Tot Enrl",
+						"type": "String"
+					},
+					{
+						"name": "Wait Tot",
+						"type": "String"
+					},
+					{
+						"name": "Acad Group",
+						"type": "String"
+					},
+					{
+						"name": "Enrl Stat",
+						"type": "String"
+					},
+					{
+						"name": "Class Stat",
 						"type": "String"
 					}
 				]
@@ -1032,6 +1313,31 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"folderPath": "finals24",
+						"fileSystem": "silver"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_MBTA_Historical')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_finals26')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLS_MBTA_Historical",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "finals26",
 						"fileSystem": "silver"
 					},
 					"compressionCodec": "snappy"
@@ -1889,6 +2195,116 @@
 				"[concat(variables('factoryId'), '/datasets/Excel_SPRING2026')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet_CLASSES_COMBINED')]",
 				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_MBTA_Historical')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/spring26_parquet')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CSV_finals_s26",
+								"type": "DatasetReference"
+							},
+							"name": "finalss26"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_finals26",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {Academic Career} as string,",
+						"          {Academic Group} as string,",
+						"          {Course ID} as string,",
+						"          {Subject Area} as string,",
+						"          {Catalog Nbr} as string,",
+						"          {Class Section} as string,",
+						"          Description as string,",
+						"          Session as string,",
+						"          {Enrollment Total} as string,",
+						"          {Exam Time Code} as string,",
+						"          {Exam Date} as string,",
+						"          {Exam Start Time} as string,",
+						"          {Exam End Time} as string,",
+						"          {Facility ID(s)} as string,",
+						"          {Room Capacity} as string,",
+						"          {Combined Exam} as string,",
+						"          {Instructor(s)} as string,",
+						"          {Instructor's Email(s)} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> finalss26",
+						"finalss26 select(mapColumn(",
+						"          each(match(true()),",
+						"               lower(replace(replace(replace(replace(replace(replace($$,' ','_'),'{',''),'}',''),'@','_'),'-','_'),'.','_')) = $$)",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(day_of_week = case(  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 1, 'Sunday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 2, 'Weekday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 3, 'Weekday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 4, 'Weekday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 5, 'Weekday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 6, 'Weekday',  'Saturday'),",
+						"          exam_start_bucket = concat(  lpad(toString(hour(toTimestamp(exam_start_time, 'h:mm a'))), 2, '0'),  ':00:00'),",
+						"          exam_end_bucket = concat(  lpad(    toString(      iif(        minute(toTimestamp(exam_end_time, 'h:mm a')) > 0,        hour(toTimestamp(exam_end_time, 'h:mm a')) + 1,        hour(toTimestamp(exam_end_time, 'h:mm a'))      )    ),    2,    '0'  ),  ':00:00')) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          academic_career,",
+						"          academic_group,",
+						"          course_id,",
+						"          subject_area,",
+						"          catalog_nbr,",
+						"          class_section,",
+						"          description,",
+						"          session,",
+						"          enrollment_total,",
+						"          exam_time_code,",
+						"          exam_date,",
+						"          exam_start_time,",
+						"          exam_end_time,",
+						"          facility_ids = {facility_id(s)},",
+						"          room_capacity,",
+						"          combined_exam,",
+						"          instructors = {instructor(s)},",
+						"          {instructor's_emails} = {instructor's_email(s)},",
+						"          day_of_week,",
+						"          exam_start_bucket,",
+						"          exam_end_bucket",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CSV_finals_s26')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_finals26')]"
 			]
 		}
 	]

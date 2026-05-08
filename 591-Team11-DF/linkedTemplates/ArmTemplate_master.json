@@ -65,13 +65,33 @@
 					},
 					"LS_REST_MBTA_properties_typeProperties_url": {
 						"value": "[parameters('LS_REST_MBTA_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "591-Team11-DF_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					},
 					"TRIGGER_MBTA_Ingest_1year_properties_PL_MBTA_Ingestion_parameters_item_info": {
 						"value": "[parameters('TRIGGER_MBTA_Ingest_1year_properties_PL_MBTA_Ingestion_parameters_item_info')]"
 					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', '591-Team11-DF_ArmTemplate_0')]"
+			]
 		}
 	]
 }

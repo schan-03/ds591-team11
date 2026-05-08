@@ -1,0 +1,450 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "591-Team11-DF"
+		},
+		"TRIGGER_MBTA_Ingest_1year_properties_PL_MBTA_Ingestion_parameters_item_info": {
+			"type": "string",
+			"defaultValue": "Fall_2024_MBTA_Rail_Ridership_by_Hour_Route_Line_and_Stop/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/combine_spring2026')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SPRING26_JSON",
+								"type": "DatasetReference"
+							},
+							"name": "spring2026"
+						},
+						{
+							"dataset": {
+								"referenceName": "Excel_SPRING2026",
+								"type": "DatasetReference"
+							},
+							"name": "notspring2026"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_CLASSES_COMBINED",
+								"type": "DatasetReference"
+							},
+							"name": "sink1",
+							"rejectedDataLinkedService": {
+								"referenceName": "LS_ADLS_MBTA_Historical",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "flatten1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "select3"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          pageCount as integer,",
+						"          classes as (index as integer, institution as string, institution_descr as string, crse_id as string, crse_offer_nbr as integer, strm as string, session_code as string, session_descr as string, class_section as string, location as string, location_descr as string, start_dt as string, end_dt as string, class_stat as string, campus as string, campus_descr as string, class_nbr as integer, acad_career as string, acad_career_descr as string, component as string, subject as string, subject_descr as string, catalog_nbr as string, class_type as string, schedule_print as string, acad_group as string, instruction_mode as string, instruction_mode_descr as string, acad_org as string, grading_basis as string, wait_tot as integer, wait_cap as integer, class_capacity as integer, enrollment_total as integer, enrollment_available as integer, descr as string, rqmnt_designtn as string, units as string, combined_section as string, combined_descr as string, enrl_stat as string, enrl_stat_descr as string, topic as string, instructors as (name as string, email as string)[], section_type as string, meetings as (days as string, start_time as string, end_time as string, start_dt as string, end_dt as string, bldg_cd as string, bldg_has_coordinates as boolean, facility_descr as string, room as string, facility_id as string, instructor as string)[], crse_attr as string, crse_attr_value as string, reserve_caps as (rsrv_cap_nbr as integer, start_dt as string, enrl_cap as integer, descr as string, enrl_tot as integer)[], reserved_combined_info as (class_enrl_cap as integer, combined_enrl_cap as integer, enrl_tot_other_combined as integer), isInCart as boolean, isEnrolled as boolean, isWaitlisted as boolean, notes as string[], icons as string[])[]",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> spring2026",
+						"source(output(",
+						"          Course_ID as string,",
+						"          Term as string,",
+						"          Session as string,",
+						"          Consolidated_Class_Field as string,",
+						"          Subject_Area as string,",
+						"          Catalog_Nbr as string,",
+						"          {Class Section} as string,",
+						"          {Class Nbr} as string,",
+						"          Career as string,",
+						"          Description as string,",
+						"          {Credit Hours} as string,",
+						"          Campus as string,",
+						"          {Days Of The Week} as string,",
+						"          {Start Time} as string,",
+						"          {End Time} as string,",
+						"          {Facil ID} as string,",
+						"          {Meeting Start Date} as string,",
+						"          {Meeting End Date} as string,",
+						"          {Cap Enrl} as string,",
+						"          {Wait Cap} as string,",
+						"          {Min Enrl} as string,",
+						"          {Tot Enrl} as string,",
+						"          {Wait Tot} as string,",
+						"          {Acad Group} as string,",
+						"          {Enrl Stat} as string,",
+						"          {Class Stat} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> notspring2026",
+						"spring2026 foldDown(unroll(classes.meetings, classes),",
+						"     mapColumn(",
+						"          campus_location = classes.location,",
+						"          start_date = classes.start_dt,",
+						"          end_date = classes.end_dt,",
+						"          subject_area = classes.subject,",
+						"          catalog_nbr = classes.catalog_nbr,",
+						"          days = classes.meetings.days,",
+						"          start_time = classes.meetings.start_time,",
+						"          end_time = classes.meetings.end_time,",
+						"          facility_id = classes.meetings.facility_id,",
+						"          location_address = classes.meetings.facility_descr,",
+						"          enrl_cap = classes.reserve_caps.enrl_cap,",
+						"          combined_enrl_cap = classes.reserved_combined_info.combined_enrl_cap,",
+						"          enrl_tot = classes.reserve_caps.enrl_tot,",
+						"          class_section = classes.class_section",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten1",
+						"flatten1 derive({consolidated class field} = concat(concat(subject_area, catalog_nbr), class_section),",
+						"          {12hr_start_time} = concat(",
+						"  toString(",
+						"    iif(",
+						"      toInteger(substring(replace(substring(start_time,1,8),'.',':'),1,2)) % 12 == 0,",
+						"      12,",
+						"      toInteger(substring(replace(substring(start_time,1,8),'.',':'),1,2)) % 12",
+						"    )",
+						"  ),",
+						"  ':',",
+						"  substring(replace(substring(start_time,1,8),'.',':'),4,2),",
+						"  ' ',",
+						"  iif(",
+						"    toInteger(substring(replace(substring(start_time,1,8),'.',':'),1,2)) >= 12,",
+						"    'PM',",
+						"    'AM'",
+						"  )",
+						"),",
+						"          {12hr_end_time} = concat(",
+						"  toString(",
+						"    iif(",
+						"      toInteger(substring(replace(substring(end_time,1,8),'.',':'),1,2)) % 12 == 0,",
+						"      12,",
+						"      toInteger(substring(replace(substring(end_time,1,8),'.',':'),1,2)) % 12",
+						"    )",
+						"  ),",
+						"  ':',",
+						"  substring(replace(substring(end_time,1,8),'.',':'),4,2),",
+						"  ' ',",
+						"  iif(",
+						"    toInteger(substring(replace(substring(end_time,1,8),'.',':'),1,2)) >= 12,",
+						"    'PM',",
+						"    'AM'",
+						"  )",
+						")) ~> derivedColumn1",
+						"derivedColumn1, select2 join(start_date == {Meeting Start Date}",
+						"     && end_date == {Meeting End Date}",
+						"     && {12hr_start_time} == {Start Time}",
+						"     && {12hr_end_time} == {End Time}",
+						"     && facility_id == {Facil ID}",
+						"     && days == {Days Of The Week}",
+						"     && enrl_tot == toInteger({Tot Enrl}),",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join1",
+						"notspring2026 select(mapColumn(",
+						"          Consolidated_Class_Field,",
+						"          Subject_Area,",
+						"          Catalog_Nbr,",
+						"          {Class Section},",
+						"          {Days Of The Week},",
+						"          {Start Time},",
+						"          {End Time},",
+						"          {Facil ID},",
+						"          {Meeting Start Date},",
+						"          {Meeting End Date},",
+						"          {Cap Enrl},",
+						"          {Wait Cap},",
+						"          {Min Enrl},",
+						"          {Tot Enrl},",
+						"          {Wait Tot}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"join1 select(mapColumn(",
+						"          each(match(true()),",
+						"               lower(replace(replace(replace(replace(replace(replace($$,' ','_'),'{',''),'}',''),'@','_'),'-','_'),'.','_')) = $$)",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"select3 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: []) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/spring26_parquet')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CSV_finals_s26",
+								"type": "DatasetReference"
+							},
+							"name": "finalss26"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_finals26",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {Academic Career} as string,",
+						"          {Academic Group} as string,",
+						"          {Course ID} as string,",
+						"          {Subject Area} as string,",
+						"          {Catalog Nbr} as string,",
+						"          {Class Section} as string,",
+						"          Description as string,",
+						"          Session as string,",
+						"          {Enrollment Total} as string,",
+						"          {Exam Time Code} as string,",
+						"          {Exam Date} as string,",
+						"          {Exam Start Time} as string,",
+						"          {Exam End Time} as string,",
+						"          {Facility ID(s)} as string,",
+						"          {Room Capacity} as string,",
+						"          {Combined Exam} as string,",
+						"          {Instructor(s)} as string,",
+						"          {Instructor's Email(s)} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> finalss26",
+						"finalss26 select(mapColumn(",
+						"          each(match(true()),",
+						"               lower(replace(replace(replace(replace(replace(replace($$,' ','_'),'{',''),'}',''),'@','_'),'-','_'),'.','_')) = $$)",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(day_of_week = case(  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 1, 'Sunday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 2, 'Weekday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 3, 'Weekday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 4, 'Weekday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 5, 'Weekday',  dayOfWeek(toDate(exam_date, 'MM/dd/yyyy')) == 6, 'Weekday',  'Saturday'),",
+						"          exam_start_bucket = concat(  lpad(toString(hour(toTimestamp(exam_start_time, 'h:mm a'))), 2, '0'),  ':00:00'),",
+						"          exam_end_bucket = concat(  lpad(    toString(      iif(        minute(toTimestamp(exam_end_time, 'h:mm a')) > 0,        hour(toTimestamp(exam_end_time, 'h:mm a')) + 1,        hour(toTimestamp(exam_end_time, 'h:mm a'))      )    ),    2,    '0'  ),  ':00:00')) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          academic_career,",
+						"          academic_group,",
+						"          course_id,",
+						"          subject_area,",
+						"          catalog_nbr,",
+						"          class_section,",
+						"          description,",
+						"          session,",
+						"          enrollment_total,",
+						"          exam_time_code,",
+						"          exam_date,",
+						"          exam_start_time,",
+						"          exam_end_time,",
+						"          facility_ids = {facility_id(s)},",
+						"          room_capacity,",
+						"          combined_exam,",
+						"          instructors = {instructor(s)},",
+						"          {instructor's_emails} = {instructor's_email(s)},",
+						"          day_of_week,",
+						"          exam_start_bucket,",
+						"          exam_end_bucket",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/transform_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "combine_class_ridership_F24_parquet",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "combine_class_ridership_F24_parquet",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"historicalmbtaf24": {},
+									"finalsf24": {},
+									"bubuildingcodes": {},
+									"sink1": {},
+									"sink2": {},
+									"sink3": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/transform_data_2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "spring26_parquet",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"finalss26": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/spring26_parquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TRIGGER_MBTA_Ingest_1year')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PL_MBTA_Ingestion",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"item_info": "[parameters('TRIGGER_MBTA_Ingest_1year_properties_PL_MBTA_Ingestion_parameters_item_info')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Month",
+						"interval": 12,
+						"startTime": "2026-04-01T00:00:00",
+						"timeZone": "Eastern Standard Time",
+						"schedule": {
+							"monthDays": [
+								1
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
